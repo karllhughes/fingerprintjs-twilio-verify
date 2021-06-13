@@ -1,0 +1,9 @@
+<h1>Welcome!</h1>
+<p>Please verify using the two-factor authentication code sent to your phone</p>
+<form action="/auth/verify" method="post">
+<div class="form-group">
+    <label for="code">Authentication code:</label>
+    <input type="text" class="form-control" id="code" name="code" required />
+</div>
+<input class="btn btn-primary btn-block" type="submit" value="Verify">
+</form>

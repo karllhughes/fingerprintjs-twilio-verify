@@ -1,35 +1,65 @@
 const express = require('express');
 const router = express.Router();
+const {TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN, VERIFICATION_SID} = process.env;
+const twilio = require('twilio')(TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN);
 const users = [
-  {
-    id: 1,
-    username: 'sanket',
-    password: 'abc123',
-  },
+    {
+        id: 1,
+        username: 'sanket',
+        password: 'abc123',
+        phone: '+19018279637',
+    },
 ];
 
 const authenticate = (username, password) => {
-  return username && password && users.find(user => user.username === username && user.password === password);
+    return username && password && users.find(user => user.username === username && user.password === password);
 }
 
-router.get('/login', function(req, res, next) {
-  res.render('login');
+router.get('/login', function (req, res, next) {
+    res.render('login');
 });
 
 router.post('/login', (req, res) => {
-  const session = req.session;
-  const user = authenticate(req.body.username, req.body.password);
-  if (user) {
-    session.user = user;
-    res.redirect('/');
-  } else {
-    res.redirect('/auth/login');
-  }
+    const session = req.session;
+    const user = authenticate(req.body.username, req.body.password);
+    if (user) {
+        session.user = user;
+        session.verified = false;
+        twilio.verify.services(VERIFICATION_SID)
+            .verifications
+            .create({to: user.phone, channel: 'sms'})
+            .then(() => res.redirect('/auth/verify'));
+    } else {
+        res.redirect('/auth/login');
+    }
 });
 
-router.get('/logout', function(req, res, next) {
-  req.session.destroy();
-  res.redirect('/auth/login');
+router.get('/verify', function (req, res, next) {
+    res.render('verify');
+});
+
+router.post('/verify', (req, res) => {
+    const session = req.session;
+    if (session.user) {
+        twilio.verify.services(VERIFICATION_SID)
+            .verificationChecks
+            .create({to: session.user.phone, code: req.body.code})
+            .then(verification_check => {
+                if (verification_check === 'approved') {
+                    session.verified = true;
+                    res.redirect('/');
+                } else {
+                    res.redirect('/auth/login');
+                }
+            });
+    } else {
+        res.redirect('/auth/login');
+    }
+});
+
+router.get('/logout', function (req, res, next) {
+    req.session.destroy();
+    res.redirect('/auth/login');
 });
 
 module.exports = router;
