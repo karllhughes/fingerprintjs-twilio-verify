@@ -1,0 +1,9 @@
+body {
+  background-image: url("http://cdn.backgroundhost.com/backgrounds/subtlepatterns/connect.png");
+}
+.main {
+  margin: 0 auto;
+  max-width: 600px;
+  background-color: white;
+  padding: 50px 30px;
+}
