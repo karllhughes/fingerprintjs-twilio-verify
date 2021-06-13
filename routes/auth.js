@@ -8,6 +8,7 @@ const users = [
         username: 'sanket',
         password: 'abc123',
         phone: '+19018279637',
+        lastKnownVisitorId: '27be69f19cf7951d0100ec48924c638b',
     },
 ];
 
@@ -24,11 +25,16 @@ router.post('/login', (req, res) => {
     const user = authenticate(req.body.username, req.body.password);
     if (user) {
         session.user = user;
-        session.verified = false;
-        twilio.verify.services(VERIFICATION_SID)
-            .verifications
-            .create({to: user.phone, channel: 'sms'})
-            .then(() => res.redirect('/auth/verify'));
+        if (user.lastKnownVisitorId === req.body.visitorId) {
+            session.verified = true;
+            res.redirect('/');
+        } else {
+            session.verified = false;
+            twilio.verify.services(VERIFICATION_SID)
+                .verifications
+                .create({to: user.phone, channel: 'sms'})
+                .then(() => res.redirect('/auth/verify'));
+        }
     } else {
         res.redirect('/auth/login');
     }
