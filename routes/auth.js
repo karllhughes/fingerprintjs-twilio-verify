@@ -5,7 +5,7 @@ const twilio = require('twilio')(TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN);
 const users = [
     {
         id: 1,
-        username: 'sanket',
+        username: 'karl',
         password: 'abc123',
         phone: '+19018279637',
         lastKnownVisitorId: '27be69f19cf7951d0100ec48924c638b',
@@ -51,7 +51,7 @@ router.post('/verify', (req, res) => {
             .verificationChecks
             .create({to: session.user.phone, code: req.body.code})
             .then(verification_check => {
-                if (verification_check === 'approved') {
+                if (verification_check.status === 'approved') {
                     session.verified = true;
                     res.redirect('/');
                 } else {
