@@ -7,7 +7,7 @@ const users = [
         id: 1,
         username: 'karl',
         password: 'abc123',
-        phone: '+19018279637',
+        phone: 'YOUR_PHONE_NUMBER',
     },
 ];
 
