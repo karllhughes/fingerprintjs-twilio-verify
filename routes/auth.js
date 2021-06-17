@@ -45,7 +45,7 @@ router.post('/verify', (req, res) => {
             .verificationChecks
             .create({to: session.user.phone, code: req.body.code})
             .then(verification_check => {
-                if (verification_check === 'approved') {
+                if (verification_check.status === 'approved') {
                     session.verified = true;
                     res.redirect('/');
                 } else {
