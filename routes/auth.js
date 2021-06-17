@@ -3,12 +3,20 @@ const router = express.Router();
 const {TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN, VERIFICATION_SID} = process.env;
 const twilio = require('twilio')(TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN);
 const users = [
+<<<<<<< HEAD
     {
         id: 1,
         username: 'sanket',
         password: 'abc123',
         phone: '+19018279637',
     },
+=======
+  {
+    id: 1,
+    username: 'karl',
+    password: 'abc123',
+  },
+>>>>>>> base
 ];
 
 const authenticate = (username, password) => {

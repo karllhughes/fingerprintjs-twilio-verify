@@ -64,4 +64,8 @@ typings/
 public
 *.sqlite3
 
+<<<<<<< HEAD
 .tool-versions
+=======
+.tool-versions
+>>>>>>> base
